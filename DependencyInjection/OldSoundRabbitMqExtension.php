@@ -197,7 +197,7 @@ class OldSoundRabbitMqExtension extends Extension
                 $consumer['queue_options'] = $this->getDefaultQueueOptions();
             }
             $definition->addMethodCall('setQueueOptions', array($this->normalizeArgumentKeys($consumer['queue_options'])));
-            $definition->addMethodCall('setCallback', array(array(new Reference($consumer['callback']), 'execute')));
+            $definition->addMethodCall('setCallback', array(array($consumer['callback'], 'execute')));
 
             if (array_key_exists('qos_options', $consumer)) {
                 $definition->addMethodCall('setQosOptions', array(
