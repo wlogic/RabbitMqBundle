@@ -2,6 +2,7 @@
 
 namespace OldSound\RabbitMqBundle\DependencyInjection;
 
+use OldSound\RabbitMqBundle\RabbitMq\BatchConsumerInterface;
 use OldSound\RabbitMqBundle\RabbitMq\ConsumerInterface;
 use Symfony\Component\Config\Definition\Exception\InvalidConfigurationException;
 use Symfony\Component\Config\FileLocator;
@@ -59,6 +60,9 @@ class OldSoundRabbitMqExtension extends Extension
 
         // make all consumer callbacks public - so we can get them from the container at run time
         $container->registerForAutoconfiguration(ConsumerInterface::class)
+            ->setPublic(true);
+
+        $container->registerForAutoconfiguration(BatchConsumerInterface::class)
             ->setPublic(true);
 
         if ($this->collectorEnabled && $this->channelIds) {
@@ -571,7 +575,7 @@ class OldSoundRabbitMqExtension extends Extension
                 ->addTag('old_sound_rabbit_mq.batch_consumer')
                 ->addMethodCall('setTimeoutWait', [$consumer['timeout_wait']])
                 ->addMethodCall('setPrefetchCount', [$consumer['qos_options']['prefetch_count']])
-                ->addMethodCall('setCallback', [[new Reference($consumer['callback']), 'batchExecute']])
+                ->addMethodCall('setCallback', [[$consumer['callback'], 'batchExecute']])
                 ->addMethodCall('setExchangeOptions', [$this->normalizeArgumentKeys($consumer['exchange_options'])])
                 ->addMethodCall('setQueueOptions', [$this->normalizeArgumentKeys($consumer['queue_options'])])
                 ->addMethodCall(

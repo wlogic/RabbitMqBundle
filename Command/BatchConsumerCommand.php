@@ -25,7 +25,8 @@ final class BatchConsumerCommand extends BaseRabbitMqCommand
             // Halt consumer if waiting for a new message from the queue
             try {
                 $this->consumer->stopConsuming();
-            } catch (AMQPTimeoutException $e) {}
+            } catch (AMQPTimeoutException $e) {
+            }
         }
     }
 
@@ -40,15 +41,14 @@ final class BatchConsumerCommand extends BaseRabbitMqCommand
             ->addOption('memory-limit', 'l', InputOption::VALUE_OPTIONAL, 'Allowed memory for this process', null)
             ->addOption('debug', 'd', InputOption::VALUE_NONE, 'Enable Debugging')
             ->addOption('without-signals', 'w', InputOption::VALUE_NONE, 'Disable catching of system signals')
-            ->setDescription('Executes a Batch Consumer');
-        ;
+            ->setDescription('Executes a Batch Consumer');;
     }
 
     /**
      * Executes the current command.
      *
-     * @param   InputInterface      $input      An InputInterface instance
-     * @param   OutputInterface     $output     An OutputInterface instance
+     * @param InputInterface $input An InputInterface instance
+     * @param OutputInterface $output An OutputInterface instance
      *
      * @return  integer                         0 if everything went fine, or an error code
      *
@@ -63,15 +63,17 @@ final class BatchConsumerCommand extends BaseRabbitMqCommand
 
         if (!AMQP_WITHOUT_SIGNALS && extension_loaded('pcntl')) {
             if (!function_exists('pcntl_signal')) {
-                throw new \BadFunctionCallException("Function 'pcntl_signal' is referenced in the php.ini 'disable_functions' and can't be called.");
+                throw new \BadFunctionCallException(
+                    "Function 'pcntl_signal' is referenced in the php.ini 'disable_functions' and can't be called."
+                );
             }
 
-            pcntl_signal(SIGTERM, array(&$this, 'stopConsumer'));
-            pcntl_signal(SIGINT, array(&$this, 'stopConsumer'));
+            pcntl_signal(SIGTERM, [&$this, 'stopConsumer']);
+            pcntl_signal(SIGINT, [&$this, 'stopConsumer']);
         }
 
         if (defined('AMQP_DEBUG') === false) {
-            define('AMQP_DEBUG', (bool) $input->getOption('debug'));
+            define('AMQP_DEBUG', (bool)$input->getOption('debug'));
         }
 
         $this->initConsumer($input);
@@ -80,15 +82,19 @@ final class BatchConsumerCommand extends BaseRabbitMqCommand
     }
 
     /**
-     * @param   InputInterface  $input
+     * @param InputInterface $input
      */
     protected function initConsumer(InputInterface $input)
     {
         $this->consumer = $this->getContainer()
             ->get(sprintf($this->getConsumerService(), $input->getArgument('name')));
 
+        // update callback to service and method
+        list($class, $method) = $this->consumer->getCallback();
+        $this->consumer->setCallback([$this->getContainer()->get($class), $method,]);
+
         if (null !== $input->getOption('memory-limit') &&
-            ctype_digit((string) $input->getOption('memory-limit')) &&
+            ctype_digit((string)$input->getOption('memory-limit')) &&
             $input->getOption('memory-limit') > 0
         ) {
             $this->consumer->setMemoryLimit($input->getOption('memory-limit'));
