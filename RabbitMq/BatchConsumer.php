@@ -93,6 +93,14 @@ class BatchConsumer extends BaseAmqp implements DequeuerInterface
         return $this;
     }
 
+    /**
+     * @return callable
+     */
+    public function getCallback()
+    {
+        return $this->callback;
+    }
+
     public function consume()
     {
         $this->setupConsumer();
