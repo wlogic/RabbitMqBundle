@@ -75,6 +75,11 @@
         <service id="old_sound_rabbit_mq.go_consumer_command" class="OldSound\RabbitMqBundle\Command\GoConsumerCommand">
             <tag name="console.command" command="rabbitmq:go:consumer" />
         </service>
+
+        <service id="old_sound_rabbit_mq.go__batch_consumer_command"
+                 class="OldSound\RabbitMqBundle\Command\GoBatchConsumerCommand">
+            <tag name="console.command" command="rabbitmq:go:batch-consumer" />
+        </service>
     </services>
 
 </container>

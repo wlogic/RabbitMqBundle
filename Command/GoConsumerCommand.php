@@ -2,16 +2,14 @@
 
 namespace OldSound\RabbitMqBundle\Command;
 
-use OldSound\RabbitMqBundle\RabbitMq\ConsumerInterface;
 use PhpAmqpLib\Message\AMQPMessage;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class GoConsumerCommand extends BaseRabbitMqCommand
+class GoConsumerCommand extends BaseGoConsumerCommand
 {
-    protected $consumer;
 
     protected function configure()
     {
@@ -49,34 +47,5 @@ class GoConsumerCommand extends BaseRabbitMqCommand
     protected function getConsumerService()
     {
         return 'old_sound_rabbit_mq.%s_consumer';
-    }
-
-    /**
-     * Process response from consumer and return correct number
-     *
-     * EXIT_ACK            = 0
-     * EXIT_REJECT         = 3
-     * EXIT_REJECT_REQUEUE = 4
-     * EXIT_NACK           = 5
-     * EXIT_NACK_REQUEUE   = 6
-     *
-     * @param $response
-     * @return int
-     */
-    protected function processResponse($response)
-    {
-        if ($response === ConsumerInterface::MSG_REJECT_REQUEUE || false === $response) {
-            // Reject and requeue message to RabbitMQ
-            return 4;
-        } elseif ($response === ConsumerInterface::MSG_SINGLE_NACK_REQUEUE) {
-            // NACK and requeue message to RabbitMQ
-            return 6;
-        } elseif ($response === ConsumerInterface::MSG_REJECT) {
-            // Reject and drop
-            return 3;
-        } else {
-            // Remove message from queue only if callback return not false
-            return 0;
-        }
     }
 }
