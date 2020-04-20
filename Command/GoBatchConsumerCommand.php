@@ -46,20 +46,18 @@ class GoBatchConsumerCommand extends BaseGoConsumerCommand
 
         $resultArray = call_user_func([$this->getContainer()->get($class), $method,], $amqpMessages);
 
-        if (!is_array($resultArray)) {
-            throwException("Invalid response");
-        }
         $response = [];
-        foreach ($resultArray as $deliverykey => $result) {
-            $respons[] = [
-                'DeliveryKey' => $deliverykey,
-                "Result" => $this->processResponse($response),
+        foreach ($resultArray as $deliveryTag => $result) {
+            $response[] = [
+                'DeliveryTag' => $deliveryTag,
+                "Result" => $this->processResponse($result),
             ];
         }
 
-        echo json_encode($response);
-
-        // go application is expecting an exit code that is translated into ack / nack
+        // very shit way of doing this - but dont have another way - PaulM
+        // prefix the response with string and output to stdout - go app knows to grab it and not log it
+        echo PHP_EOL."#BP2RESULT#" .json_encode($response);
+        // go application is expecting an exit code
         exit(0);
     }
 

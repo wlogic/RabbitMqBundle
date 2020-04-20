@@ -3,6 +3,8 @@
 
 namespace OldSound\RabbitMqBundle\Command;
 
+use OldSound\RabbitMqBundle\RabbitMq\ConsumerInterface;
+
 abstract class BaseGoConsumerCommand extends BaseRabbitMqCommand
 {
 
