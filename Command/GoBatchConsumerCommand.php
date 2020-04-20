@@ -2,7 +2,6 @@
 
 namespace OldSound\RabbitMqBundle\Command;
 
-use OldSound\RabbitMqBundle\RabbitMq\ConsumerInterface;
 use PhpAmqpLib\Message\AMQPMessage;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -37,17 +36,31 @@ class GoBatchConsumerCommand extends BaseGoConsumerCommand
 
         [$class, $method] = $consumer->getCallback();
 
-        $messageArray = json_decode($input->getArgument('message'),true);
-        var_dump($messageArray);
-        die();
+        $amqpMessages = [];
+        $rawArray = json_decode($input->getArgument('message'), true);
+        foreach ($rawArray as $rawMessage) {
+            $amqpMessage = new AMQPMessage($rawMessage['Body']);
+            $amqpMessage->delivery_info['delivery_tag'] = $rawMessage['DeliveryTag'];
+            $amqpMessages[] = $amqpMessage;
+        }
 
-//        $msgs = new AMQPMessage(base64_decode($input->getArgument('message')));
-//        $msgs->
+        $resultArray = call_user_func([$this->getContainer()->get($class), $method,], $amqpMessages);
 
-        $response = call_user_func([$this->getContainer()->get($class), $method,], $msg);
+        if (!is_array($resultArray)) {
+            throwException("Invalid response");
+        }
+        $response = [];
+        foreach ($resultArray as $deliverykey => $result) {
+            $respons[] = [
+                'DeliveryKey' => $deliverykey,
+                "Result" => $this->processResponse($response),
+            ];
+        }
+
+        echo json_encode($response);
 
         // go application is expecting an exit code that is translated into ack / nack
-        exit($this->processResponse($response));
+        exit(0);
     }
 
     protected function getConsumerService()
