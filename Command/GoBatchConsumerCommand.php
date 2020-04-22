@@ -38,7 +38,6 @@ class GoBatchConsumerCommand extends BaseGoConsumerCommand
         [$class, $method] = $consumer->getCallback();
 
         $amqpMessages = [];
-        echo $input->getArgument('message').PHP_EOL;
         $rawArray = json_decode($input->getArgument('message'), true);
         foreach ($rawArray as $rawMessage) {
             $amqpMessage = new AMQPMessage(base64_decode($rawMessage['Body']));
