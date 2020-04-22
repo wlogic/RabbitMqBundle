@@ -3,6 +3,7 @@
 namespace OldSound\RabbitMqBundle\Command;
 
 use PhpAmqpLib\Message\AMQPMessage;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -10,6 +11,14 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class GoBatchConsumerCommand extends BaseGoConsumerCommand
 {
+
+    protected $logger;
+
+    public function __construct(LoggerInterface $logger, string $name = null)
+    {
+        $this->logger = $logger;
+        parent::__construct($name);
+    }
 
     protected function configure()
     {
@@ -37,6 +46,7 @@ class GoBatchConsumerCommand extends BaseGoConsumerCommand
         [$class, $method] = $consumer->getCallback();
 
         $amqpMessages = [];
+        $this->logger->debug($input->getArgument('message'));
         $rawArray = json_decode($input->getArgument('message'), true);
         foreach ($rawArray as $rawMessage) {
             $amqpMessage = new AMQPMessage($rawMessage['Body']);
@@ -56,7 +66,7 @@ class GoBatchConsumerCommand extends BaseGoConsumerCommand
 
         // very shit way of doing this - but dont have another way - PaulM
         // prefix the response with string and output to stdout - go app knows to grab it and not log it
-        echo PHP_EOL."#BP2RESULT#" .json_encode($response);
+        echo PHP_EOL."#BP2RESULT#".json_encode($response);
         // go application is expecting an exit code
         exit(0);
     }
