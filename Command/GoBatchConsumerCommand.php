@@ -41,7 +41,7 @@ class GoBatchConsumerCommand extends BaseGoConsumerCommand
         echo $input->getArgument('message').PHP_EOL;
         $rawArray = json_decode($input->getArgument('message'), true);
         foreach ($rawArray as $rawMessage) {
-            $amqpMessage = new AMQPMessage($rawMessage['Body']);
+            $amqpMessage = new AMQPMessage(base64_decode($rawMessage['Body']));
             $amqpMessage->delivery_info['delivery_tag'] = $rawMessage['DeliveryTag'];
             $amqpMessages[] = $amqpMessage;
         }
