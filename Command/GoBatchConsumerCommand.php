@@ -12,14 +12,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 class GoBatchConsumerCommand extends BaseGoConsumerCommand
 {
 
-    protected $logger;
-
-    public function __construct(LoggerInterface $logger, string $name = null)
-    {
-        $this->logger = $logger;
-        parent::__construct($name);
-    }
-
     protected function configure()
     {
         $this
@@ -46,7 +38,7 @@ class GoBatchConsumerCommand extends BaseGoConsumerCommand
         [$class, $method] = $consumer->getCallback();
 
         $amqpMessages = [];
-        $this->logger->debug($input->getArgument('message'));
+        echo $input->getArgument('message').PHP_EOL;
         $rawArray = json_decode($input->getArgument('message'), true);
         foreach ($rawArray as $rawMessage) {
             $amqpMessage = new AMQPMessage($rawMessage['Body']);
