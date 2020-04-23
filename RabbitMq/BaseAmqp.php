@@ -169,6 +169,8 @@ abstract class BaseAmqp
 
     public function setupFabric()
     {
+        // make sure we are connected
+        $this->reconnect();
         if (!$this->exchangeDeclared) {
             $this->exchangeDeclare();
         }
