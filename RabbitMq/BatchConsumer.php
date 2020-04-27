@@ -66,6 +66,11 @@ class BatchConsumer extends BaseAmqp implements DequeuerInterface
     protected $gracefulMaxExecutionDateTime;
 
     /**
+     * @var int number of seconds before graceful exit
+     */
+    protected $gracefulMaxExecutionSeconds;
+
+    /**
      * @param \DateTime|null $dateTime
      */
     public function setGracefulMaxExecutionDateTime(\DateTime $dateTime = null)
@@ -78,6 +83,7 @@ class BatchConsumer extends BaseAmqp implements DequeuerInterface
      */
     public function setGracefulMaxExecutionDateTimeFromSecondsInTheFuture($secondsInTheFuture)
     {
+        $this-> $secondsInTheFuture;
         $this->setGracefulMaxExecutionDateTime(new \DateTime("+{$secondsInTheFuture} seconds"));
     }
 
@@ -581,4 +587,13 @@ class BatchConsumer extends BaseAmqp implements DequeuerInterface
 
         $this->forceStopConsumer();
     }
+
+    /**
+     * @return int
+     */
+    public function getGracefulMaxExecutionSeconds(): int
+    {
+        return $this->gracefulMaxExecutionSeconds;
+    }
+
 }
