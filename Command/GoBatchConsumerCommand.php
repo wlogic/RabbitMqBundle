@@ -16,7 +16,7 @@ class GoBatchConsumerCommand extends BaseGoConsumerCommand
     {
         $this
             ->setName('rabbitmq:go:batch-consumer')
-            ->addArgument('message', InputArgument::REQUIRED, 'Message (JSON format)')
+            ->addArgument('filename', InputArgument::REQUIRED, 'Filename of JSON messages file')
             ->addArgument('name', InputArgument::REQUIRED, 'Consumer Name')
             ->addOption('debug', 'd', InputOption::VALUE_NONE, 'Enable Debugging')
             ->setDescription('Executes a Go Batch Consumer');
@@ -37,8 +37,11 @@ class GoBatchConsumerCommand extends BaseGoConsumerCommand
 
         [$class, $method] = $consumer->getCallback();
 
+        // get contents from file
+        $jsonString = file_get_contents($input->getArgument('filename'));
+
         $amqpMessages = [];
-        $rawArray = json_decode($input->getArgument('message'), true);
+        $rawArray = json_decode($jsonString, true);
         foreach ($rawArray as $rawMessage) {
             $amqpMessage = new AMQPMessage(base64_decode($rawMessage['Body']));
             $amqpMessage->delivery_info['delivery_tag'] = $rawMessage['DeliveryTag'];
@@ -55,9 +58,8 @@ class GoBatchConsumerCommand extends BaseGoConsumerCommand
             ];
         }
 
-        // very shit way of doing this - but dont have another way - PaulM
-        // prefix the response with string and output to stdout - go app knows to grab it and not log it
-        echo PHP_EOL."#BP2RESULT#".json_encode($response);
+        // store response
+        file_put_contents($input->getArgument('filename')."_response", json_encode($response));
         // go application is expecting an exit code
         exit(0);
     }
