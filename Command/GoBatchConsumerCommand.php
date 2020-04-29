@@ -61,7 +61,7 @@ class GoBatchConsumerCommand extends BaseGoConsumerCommand
         // store response
         file_put_contents($input->getArgument('filename')."_response", json_encode($response));
         // go application is expecting an exit code
-        exit(0);
+        return 0;
     }
 
     protected function getConsumerService()

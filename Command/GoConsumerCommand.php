@@ -41,7 +41,7 @@ class GoConsumerCommand extends BaseGoConsumerCommand
         $response = call_user_func([$this->getContainer()->get($class), $method,], $msg);
 
         // go application is expecting an exit code that is translated into ack / nack
-        exit($this->processResponse($response));
+        return $this->processResponse($response);
     }
 
     protected function getConsumerService()
