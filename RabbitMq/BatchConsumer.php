@@ -55,7 +55,7 @@ class BatchConsumer extends BaseAmqp implements DequeuerInterface
     /**
      * @var int number of seconds before graceful exit
      */
-    protected $gracefulMaxExecutionSeconds;
+    protected $gracefulMaxExecutionSeconds = 0;
     /**
      * @var bool
      */
