@@ -2,6 +2,7 @@
 
 namespace OldSound\RabbitMqBundle\RabbitMq;
 
+use PhpAmqpLib\Exception\AMQPConnectionClosedException;
 use PhpAmqpLib\Message\AMQPMessage;
 use PhpAmqpLib\Wire\AMQPTable;
 
@@ -43,7 +44,13 @@ class Producer extends BaseAmqp implements ProducerInterface
     public function publish($msgBody, $routingKey = '', $additionalProperties = array(), array $headers = null)
     {
         if ($this->autoSetupFabric) {
-            $this->setupFabric();
+            try {
+                $this->setupFabric();
+            } catch (AMQPConnectionClosedException $AMQPConnectionClosedException) {
+                // attempt reconnect
+                $this->reconnect();
+                $this->setupFabric();
+            }
         }
 
         $msg = new AMQPMessage((string) $msgBody, array_merge($this->getBasicProperties(), $additionalProperties));
