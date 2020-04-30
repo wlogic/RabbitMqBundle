@@ -114,7 +114,7 @@ abstract class BaseAmqp
 
     public function reconnect()
     {
-        if (!$this->conn->isConnected()) {
+        if ($this->conn->isConnected()) {
             return;
         }
 
