@@ -16,6 +16,7 @@ abstract class BaseAmqp
     protected $consumerTag;
     protected $exchangeDeclared = false;
     protected $queueDeclared = false;
+    protected $qosDeclared = false;
     protected $routingKey = '';
     protected $autoSetupFabric = true;
     protected $basicProperties = ['content_type' => 'text/plain', 'delivery_mode' => 2];
@@ -46,6 +47,12 @@ abstract class BaseAmqp
         'arguments' => null,
         'ticket' => null,
         'declare' => true,
+    ];
+
+    protected $qosOptions = [
+        'prefetch_count' => 0,
+        'prefetch_size' => 0,
+        'global' => false,
     ];
 
     /**
@@ -159,6 +166,15 @@ abstract class BaseAmqp
     }
 
     /**
+     * @param array $options
+     * @return void
+     */
+    public function setQoSOptions(array $options = [])
+    {
+        $this->qosOptions = array_merge($this->qosOptions, $options);
+    }
+
+    /**
      * @param string $routingKey
      * @return void
      */
@@ -175,6 +191,10 @@ abstract class BaseAmqp
 
         if (!$this->queueDeclared) {
             $this->queueDeclare();
+        }
+
+        if (!$this->qosDeclared) {
+            $this->qosDeclare();
         }
     }
 
@@ -206,7 +226,7 @@ abstract class BaseAmqp
     protected function queueDeclare()
     {
         if ($this->queueOptions['declare']) {
-            list($queueName, ,) = $this->getChannel()->queue_declare(
+            [$queueName, ,] = $this->getChannel()->queue_declare(
                 $this->queueOptions['name'],
                 $this->queueOptions['passive'],
                 $this->queueOptions['durable'],
@@ -242,6 +262,20 @@ abstract class BaseAmqp
         if ('' !== $exchange) {
             $this->getChannel()->queue_bind($queue, $exchange, $routing_key);
         }
+    }
+
+    /**
+     * Sets the qos settings for the current channel
+     * Consider that prefetchSize and global do not work with rabbitMQ version <= 8.0
+     */
+    public function qosDeclare()
+    {
+        $this->getChannel()->basic_qos(
+            $this->qosOptions['prefetch_size'],
+            $this->qosOptions['prefetch_count'],
+            $this->qosOptions['global']
+        );
+        $this->qosDeclared = true;
     }
 
     /**

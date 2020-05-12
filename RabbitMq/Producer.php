@@ -29,11 +29,6 @@ class Producer extends BaseAmqp implements ProducerInterface
         return $this;
     }
 
-    protected function getBasicProperties()
-    {
-        return array('content_type' => $this->contentType, 'delivery_mode' => $this->deliveryMode);
-    }
-
     /**
      * Publishes the message and merges additional properties with basic properties
      *
@@ -42,7 +37,7 @@ class Producer extends BaseAmqp implements ProducerInterface
      * @param array $additionalProperties
      * @param array $headers
      */
-    public function publish($msgBody, $routingKey = '', $additionalProperties = array(), array $headers = null)
+    public function publish($msgBody, $routingKey = '', $additionalProperties = [], array $headers = null)
     {
         if ($this->autoSetupFabric) {
             try {
@@ -54,21 +49,34 @@ class Producer extends BaseAmqp implements ProducerInterface
             }
         }
 
-        $msg = new AMQPMessage((string) $msgBody, array_merge($this->getBasicProperties(), $additionalProperties));
+        $msg = new AMQPMessage((string)$msgBody, array_merge($this->getBasicProperties(), $additionalProperties));
 
         if (!empty($headers)) {
             $headersTable = new AMQPTable($headers);
             $msg->set('application_headers', $headersTable);
         }
 
+        // check connection
+        if ($this->getChannel()->getConnection() === null) {
+            $this->reconnect();
+        }
+
         $this->getChannel()->basic_publish($msg, $this->exchangeOptions['name'], (string)$routingKey);
-        $this->logger->debug('AMQP message published', array(
-            'amqp' => array(
-                'body' => $msgBody,
-                'routingkeys' => $routingKey,
-                'properties' => $additionalProperties,
-                'headers' => $headers
-            )
-        ));
+        $this->logger->debug(
+            'AMQP message published',
+            [
+                'amqp' => [
+                    'body' => $msgBody,
+                    'routingkeys' => $routingKey,
+                    'properties' => $additionalProperties,
+                    'headers' => $headers,
+                ],
+            ]
+        );
+    }
+
+    protected function getBasicProperties()
+    {
+        return ['content_type' => $this->contentType, 'delivery_mode' => $this->deliveryMode];
     }
 }
