@@ -341,11 +341,7 @@ class OldSoundRabbitMqExtension extends Extension
             if (array_key_exists('qos_options', $consumer)) {
                 $definition->addMethodCall(
                     'setQosOptions',
-                    [
-                        $consumer['qos_options']['prefetch_size'],
-                        $consumer['qos_options']['prefetch_count'],
-                        $consumer['qos_options']['global'],
-                    ]
+                    [$this->normalizeArgumentKeys($consumer['qos_options'])]
                 );
             }
 
