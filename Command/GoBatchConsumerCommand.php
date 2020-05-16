@@ -3,7 +3,6 @@
 namespace OldSound\RabbitMqBundle\Command;
 
 use PhpAmqpLib\Message\AMQPMessage;
-use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -48,8 +47,11 @@ class GoBatchConsumerCommand extends BaseGoConsumerCommand
             $amqpMessages[] = $amqpMessage;
         }
 
+        // clear memory
+        $rawArray = null;
+        $jsonString = null;
+        gc_collect_cycles();
         $resultArray = call_user_func([$this->getContainer()->get($class), $method,], $amqpMessages);
-        echo "Returning from consumer".PHP_EOL;
         $response = [];
         foreach ($resultArray as $deliveryTag => $result) {
             $response[] = [
@@ -57,11 +59,8 @@ class GoBatchConsumerCommand extends BaseGoConsumerCommand
                 "Result" => $this->processResponse($result),
             ];
         }
-        var_export($response);
-
-        echo "Writing file".PHP_EOL;
-        // store response
         file_put_contents($input->getArgument('filename')."_response", json_encode($response));
+
         // go application is expecting an exit code
         return 0;
     }
@@ -70,4 +69,5 @@ class GoBatchConsumerCommand extends BaseGoConsumerCommand
     {
         return 'old_sound_rabbit_mq.%s_batch';
     }
+
 }
