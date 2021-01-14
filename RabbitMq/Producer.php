@@ -65,10 +65,15 @@ class Producer extends BaseAmqp implements ProducerInterface
         try {
             $this->getChannel()->basic_publish($msg, $this->exchangeOptions['name'], (string)$routingKey);
         } catch (AMQPConnectionClosedException | AMQPChannelClosedException $AMQPConnectionClosedException) {
+            $this->logger->error('Produce Message Failed '.$AMQPConnectionClosedException->getMessage());
             // attempt reconnect
             $this->reconnect();
             // retry
-            $this->getChannel()->basic_publish($msg, $this->exchangeOptions['name'], (string)$routingKey);
+            try {
+                $this->getChannel()->basic_publish($msg, $this->exchangeOptions['name'], (string)$routingKey);
+            } catch (\Exception $e) {
+                $this->logger->error('Retry Produce Message Failed '.$e->getMessage());
+            }
         }
 
         $this->logger->debug(
