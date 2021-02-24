@@ -38,6 +38,9 @@ class GoBatchConsumerCommand extends BaseGoConsumerCommand
 
         // get contents from file
         $jsonString = file_get_contents($input->getArgument('filename'));
+        // output the whole contents of the file
+        echo "File Contents".PHP_EOL;
+        var_dump($jsonString);
 
         $amqpMessages = [];
         $rawArray = json_decode($jsonString, true);
@@ -69,5 +72,4 @@ class GoBatchConsumerCommand extends BaseGoConsumerCommand
     {
         return 'old_sound_rabbit_mq.%s_batch';
     }
-
 }
