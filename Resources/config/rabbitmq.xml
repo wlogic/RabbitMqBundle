@@ -22,6 +22,7 @@
         <parameter key="old_sound_rabbit_mq.data_collector.class">OldSound\RabbitMqBundle\DataCollector\MessageDataCollector</parameter>
         <parameter key="old_sound_rabbit_mq.parts_holder.class">OldSound\RabbitMqBundle\RabbitMq\AmqpPartsHolder</parameter>
         <parameter key="old_sound_rabbit_mq.fallback.class">OldSound\RabbitMqBundle\RabbitMq\Fallback</parameter>
+        <parameter key="old_sound_rabbit_mq.producer_manager.class">OldSound\RabbitMqBundle\RabbitMq\ProducerManager</parameter>
     </parameters>
 
     <services>
@@ -31,6 +32,9 @@
         </service>
         
         <service id="old_sound_rabbit_mq.parts_holder" class="%old_sound_rabbit_mq.parts_holder.class%" public="true" />
+
+        <service id="old_sound_rabbit_mq.producer_manager" class="%old_sound_rabbit_mq.producer_manager.class%"
+                 public="true" />
 
         <service id="old_sound_rabbit_mq.anon_consumer_command" class="OldSound\RabbitMqBundle\Command\AnonConsumerCommand">
             <tag name="console.command" command="rabbitmq:anon-consumer" />
