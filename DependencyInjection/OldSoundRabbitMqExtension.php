@@ -49,6 +49,7 @@ class OldSoundRabbitMqExtension extends Extension
 
         $this->loadConnections();
         $this->loadBindings();
+        $this->loadProducerManager();
         $this->loadProducers();
         $this->loadConsumers();
         $this->loadMultipleConsumers();
@@ -172,6 +173,19 @@ class OldSoundRabbitMqExtension extends Extension
         $definition->addArgument(new Reference($id));
     }
 
+    protected function loadProducerManager()
+    {
+        $id = 'old_sound_rabbit_mq.producer_manager';
+        $definition = new Definition('%old_sound_rabbit_mq.producer_manager.class%');
+        $definition
+            ->setPublic(true)
+            ->addTag('old_sound_rabbit_mq.producer_manager');
+        $this->injectConnection($definition, 'default');
+
+        $this->container->setDefinition($id, $definition);
+
+    }
+
     protected function loadProducers()
     {
         if ($this->config['sandbox'] == false) {
@@ -205,7 +219,6 @@ class OldSoundRabbitMqExtension extends Extension
                     $this->injectLogger($definition);
                 }
 
-                // add producer manager argument
                 $definition->addArgument(new Reference('old_sound_rabbit_mq.producer_manager'));
 
                 $producerServiceName = sprintf('old_sound_rabbit_mq.%s_producer', $key);
