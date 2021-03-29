@@ -205,6 +205,9 @@ class OldSoundRabbitMqExtension extends Extension
                     $this->injectLogger($definition);
                 }
 
+                // add producer manager argument
+                $definition->addArgument(new Reference('old_sound_rabbit_mq.producer_manager'));
+
                 $producerServiceName = sprintf('old_sound_rabbit_mq.%s_producer', $key);
 
                 $this->container->setDefinition($producerServiceName, $definition);
