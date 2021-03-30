@@ -264,6 +264,26 @@ If you need to use a custom class for a producer (which should inherit from `Old
 
 The next piece of the puzzle is to have a consumer that will take the message out of the queue and process it accordingly.
 
+#### Delayed Publishing ####
+
+Sometimes you need to publish messages at the end of a large amount of processing, for example if you want to ensure 
+that all database entries are written before publishing messages, then you can use the delayed publishing method. 
+This requires you to use the `delayedPublish` method of the Producer and inject the `ProducerManager` service to 
+actually publish the messages.
+
+```php
+$this->get('old_sound_rabbit_mq.upload_picture_producer')->delayedPublish(serialize($msg));
+```
+
+Then to actually publish the message:
+
+```php
+$this->get('old_sound_rabbit_mq.producer_manager')->publishDelayedMessages();
+```
+
+The `ProducerManager` service is a singleton and can be used anywhere within your application to publish the pending 
+messages
+
 ### Consumers ###
 
 A consumer will connect to the server and start a __loop__  waiting for incoming messages to process. Depending on the specified __callback__ for such consumer will be the behavior it will have. Let's review the consumer configuration from above:
