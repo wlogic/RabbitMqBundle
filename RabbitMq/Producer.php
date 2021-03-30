@@ -20,9 +20,9 @@ class Producer extends BaseAmqp implements ProducerInterface
 
     public function __construct(
         AbstractConnection $conn,
+        ProducerManager $producerManager,
         AMQPChannel $ch = null,
-        $consumerTag = null,
-        ProducerManager $producerManager
+        $consumerTag = null
     ) {
         $this->producerManager = $producerManager;
         parent::__construct($conn, $ch, $consumerTag);
