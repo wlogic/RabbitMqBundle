@@ -3,7 +3,6 @@
 
 namespace OldSound\RabbitMqBundle\RabbitMq;
 
-
 use PhpAmqpLib\Exception\AMQPChannelClosedException;
 use PhpAmqpLib\Exception\AMQPConnectionClosedException;
 
@@ -22,8 +21,7 @@ class ProducerManager extends BaseAmqp
 
     public function publishDelayedMessages()
     {
-
-        // publish
+        // publish delayed messages
         foreach ($this->delayedMessages as $exchange => $messageDetails) {
             foreach ($messageDetails as $messageDetail) {
                 try {
@@ -49,5 +47,7 @@ class ProducerManager extends BaseAmqp
                 }
             }
         }
+        // clear delayed messages
+        $this->delayedMessages = [];
     }
 }
