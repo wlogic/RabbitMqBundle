@@ -44,7 +44,7 @@ class AMQPConnectionFactory
         $this->parameters = array_merge($this->parameters, $parameters);
         $this->parameters = $this->parseUrl($this->parameters);
         if (is_array($this->parameters['ssl_context'])) {
-            $this->parameters['ssl_context'] = ! empty($this->parameters['ssl_context'])
+            $this->parameters['context'] = ! empty($this->parameters['ssl_context'])
                 ? stream_context_create(array('ssl' => $this->parameters['ssl_context']))
                 : null;
         }
