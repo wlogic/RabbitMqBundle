@@ -72,10 +72,6 @@ abstract class BaseConsumer extends BaseAmqp implements DequeuerInterface
             $this->setupFabric();
         }
 
-        // setup heartbeat
-        $sender = new PCNTLHeartbeatSender($this->conn);
-        $sender->register();
-
         $this->getChannel()->basic_consume($this->queueOptions['name'], $this->getConsumerTag(), false, false, false, false, array($this, 'processMessage'));
     }
 

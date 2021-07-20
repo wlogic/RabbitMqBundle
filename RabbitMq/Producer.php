@@ -100,10 +100,6 @@ class Producer extends BaseAmqp implements ProducerInterface
             }
         }
 
-        // setup heartbeat
-        $sender = new PCNTLHeartbeatSender($this->conn);
-        $sender->register();
-
         $msg = new AMQPMessage((string)$msgBody, array_merge($this->getBasicProperties(), $additionalProperties));
 
         if (!empty($headers)) {
