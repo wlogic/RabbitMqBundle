@@ -4,6 +4,7 @@ namespace OldSound\RabbitMqBundle\RabbitMq;
 
 use PhpAmqpLib\Channel\AMQPChannel;
 use PhpAmqpLib\Connection\AbstractConnection;
+use PhpAmqpLib\Connection\Heartbeat\PCNTLHeartbeatSender;
 use PhpAmqpLib\Exception\AMQPChannelClosedException;
 use PhpAmqpLib\Exception\AMQPConnectionClosedException;
 use PhpAmqpLib\Message\AMQPMessage;
@@ -98,6 +99,10 @@ class Producer extends BaseAmqp implements ProducerInterface
                 $this->setupFabric();
             }
         }
+
+        // setup heartbeat
+        $sender = new PCNTLHeartbeatSender($this->conn);
+        $sender->register();
 
         $msg = new AMQPMessage((string)$msgBody, array_merge($this->getBasicProperties(), $additionalProperties));
 

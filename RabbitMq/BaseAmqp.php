@@ -192,6 +192,10 @@ abstract class BaseAmqp
         if (!$this->queueDeclared) {
             $this->queueDeclare();
         }
+
+        if (!$this->qosDeclared) {
+            $this->qosDeclare();
+        }
     }
 
     /**
