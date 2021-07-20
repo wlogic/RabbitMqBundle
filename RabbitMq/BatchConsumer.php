@@ -3,6 +3,7 @@
 namespace OldSound\RabbitMqBundle\RabbitMq;
 
 use PhpAmqpLib\Channel\AMQPChannel;
+use PhpAmqpLib\Connection\Heartbeat\PCNTLHeartbeatSender;
 use PhpAmqpLib\Exception\AMQPRuntimeException;
 use PhpAmqpLib\Exception\AMQPTimeoutException;
 use PhpAmqpLib\Message\AMQPMessage;
@@ -136,6 +137,10 @@ class BatchConsumer extends BaseAmqp implements DequeuerInterface
         if ($this->autoSetupFabric) {
             $this->setupFabric();
         }
+
+        // setup heartbeat
+        $sender = new PCNTLHeartbeatSender($this->conn);
+        $sender->register();
 
         $this->getChannel()->basic_consume(
             $this->queueOptions['name'],
@@ -530,20 +535,6 @@ class BatchConsumer extends BaseAmqp implements DequeuerInterface
         $this->consumerTag = $tag;
 
         return $this;
-    }
-
-    /**
-     * Sets the qos settings for the current channel
-     * Consider that prefetchSize and global do not work with rabbitMQ version <= 8.0
-     *
-     * @param int $prefetchSize
-     * @param int $prefetchCount
-     * @param bool $global
-     */
-    public function setQosOptions($prefetchSize = 0, $prefetchCount = 0, $global = false)
-    {
-        $this->prefetchCount = $prefetchCount;
-        $this->getChannel()->basic_qos($prefetchSize, $prefetchCount, $global);
     }
 
     /**

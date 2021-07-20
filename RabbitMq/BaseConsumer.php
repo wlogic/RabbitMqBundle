@@ -2,6 +2,7 @@
 
 namespace OldSound\RabbitMqBundle\RabbitMq;
 
+use PhpAmqpLib\Connection\Heartbeat\PCNTLHeartbeatSender;
 use PhpAmqpLib\Message\AMQPMessage;
 
 abstract class BaseConsumer extends BaseAmqp implements DequeuerInterface
@@ -71,10 +72,9 @@ abstract class BaseConsumer extends BaseAmqp implements DequeuerInterface
             $this->setupFabric();
         }
 
-        // setup QoS
-        if (!$this->qosDeclared) {
-            $this->qosDeclare();
-        }
+        // setup heartbeat
+        $sender = new PCNTLHeartbeatSender($this->conn);
+        $sender->register();
 
         $this->getChannel()->basic_consume($this->queueOptions['name'], $this->getConsumerTag(), false, false, false, false, array($this, 'processMessage'));
     }
