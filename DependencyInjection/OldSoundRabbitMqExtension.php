@@ -589,15 +589,15 @@ class OldSoundRabbitMqExtension extends Extension
                 ->addMethodCall('setPrefetchCount', [$consumer['qos_options']['prefetch_count']])
                 ->addMethodCall('setCallback', [[$consumer['callback'], 'batchExecute']])
                 ->addMethodCall('setExchangeOptions', [$this->normalizeArgumentKeys($consumer['exchange_options'])])
-                ->addMethodCall('setQueueOptions', [$this->normalizeArgumentKeys($consumer['queue_options'])])
-                ->addMethodCall(
+                ->addMethodCall('setQueueOptions', [$this->normalizeArgumentKeys($consumer['queue_options'])]);
+
+            if (array_key_exists('qos_options', $consumer)) {
+                $definition->addMethodCall(
                     'setQosOptions',
-                    [
-                        $consumer['qos_options']['prefetch_size'],
-                        $consumer['qos_options']['prefetch_count'],
-                        $consumer['qos_options']['global'],
-                    ]
+                    [$this->normalizeArgumentKeys($consumer['qos_options'])]
                 );
+            }
+
 
             if (isset($consumer['idle_timeout_exit_code'])) {
                 $definition->addMethodCall('setIdleTimeoutExitCode', [$consumer['idle_timeout_exit_code']]);
