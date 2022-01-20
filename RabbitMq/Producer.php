@@ -4,9 +4,9 @@ namespace OldSound\RabbitMqBundle\RabbitMq;
 
 use PhpAmqpLib\Channel\AMQPChannel;
 use PhpAmqpLib\Connection\AbstractConnection;
-use PhpAmqpLib\Connection\Heartbeat\PCNTLHeartbeatSender;
 use PhpAmqpLib\Exception\AMQPChannelClosedException;
 use PhpAmqpLib\Exception\AMQPConnectionClosedException;
+use PhpAmqpLib\Exception\AMQPIOException;
 use PhpAmqpLib\Message\AMQPMessage;
 use PhpAmqpLib\Wire\AMQPTable;
 
@@ -93,7 +93,7 @@ class Producer extends BaseAmqp implements ProducerInterface
         if ($this->autoSetupFabric) {
             try {
                 $this->setupFabric();
-            } catch (AMQPConnectionClosedException | AMQPChannelClosedException $AMQPConnectionClosedException) {
+            } catch (AMQPConnectionClosedException|AMQPChannelClosedException|AMQPIOException $AMQPConnectionClosedException) {
                 // attempt reconnect
                 $this->reconnect();
                 $this->setupFabric();
@@ -115,15 +115,16 @@ class Producer extends BaseAmqp implements ProducerInterface
         // publish
         try {
             $this->getChannel()->basic_publish($msg, $this->exchangeOptions['name'], (string)$routingKey);
-        } catch (AMQPConnectionClosedException | AMQPChannelClosedException $AMQPConnectionClosedException) {
-            $this->logger->error('Produce Message Failed '.$AMQPConnectionClosedException->getMessage());
+        } catch (AMQPConnectionClosedException|AMQPChannelClosedException|AMQPIOException
+        $AMQPConnectionClosedException) {
+            $this->logger->error('Produce Message Failed ' . $AMQPConnectionClosedException->getMessage());
             // attempt reconnect
             $this->reconnect();
             // retry
             try {
                 $this->getChannel()->basic_publish($msg, $this->exchangeOptions['name'], (string)$routingKey);
             } catch (\Exception $e) {
-                $this->logger->error('Retry Produce Message Failed '.$e->getMessage());
+                $this->logger->error('Retry Produce Message Failed ' . $e->getMessage());
             }
         }
 
