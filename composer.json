@@ -4,6 +4,7 @@
     "description": "Integrates php-amqplib with Symfony & RabbitMq. Formerly oldsound/rabbitmq-bundle.",
     "keywords": ["symfony", "symfony2", "symfony3", "symfony4", "symfony5", "rabbitmq", "message", "queue", "amqp"],
     "license": "MIT",
+    "version": "3.0",
     "authors": [{
         "name" : "Alvaro Videla"
     }],
