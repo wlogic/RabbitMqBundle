@@ -37,5 +37,6 @@ class SetupFabricCommand extends BaseRabbitMqCommand
             }
         }
 
+        return BaseRabbitMqCommand::SUCCESS;
     }
 }
