@@ -26,7 +26,7 @@ class DeleteCommand extends ConsumerCommand
      * @param InputInterface $input
      * @param OutputInterface $output
      *
-     * @return void
+     * @return integer 0 if everything went fine, or an error code
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
@@ -44,12 +44,14 @@ class DeleteCommand extends ConsumerCommand
             if (!$this->getHelper('question')->ask($input, $output, $question)) {
                 $output->writeln('<error>Deletion cancelled!</error>');
 
-                return 1;
+                return ConsumerCommand::FAILURE;
             }
         }
 
         $this->consumer = $this->getContainer()
             ->get(sprintf($this->getConsumerService(), $input->getArgument('name')));
         $this->consumer->delete();
+
+        return ConsumerCommand::SUCCESS;
     }
 }

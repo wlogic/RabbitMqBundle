@@ -27,6 +27,8 @@ class GoBatchConsumerCommand extends BaseGoConsumerCommand
      * @param InputInterface $input An InputInterface instance
      * @param OutputInterface $output An OutputInterface instance
      *
+     * @return integer
+     *
      * @throws \InvalidArgumentException When the number of messages to consume is less than 0
      * @throws \BadFunctionCallException When the pcntl is not installed and option -s is true
      */

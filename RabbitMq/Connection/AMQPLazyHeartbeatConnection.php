@@ -3,10 +3,10 @@
 namespace OldSound\RabbitMqBundle\RabbitMq\Connection;
 
 
-use PhpAmqpLib\Connection\AMQPLazyConnection;
+use PhpAmqpLib\Connection\AMQPStreamConnection;
 use PhpAmqpLib\Connection\Heartbeat\PCNTLHeartbeatSender;
 
-class AMQPLazyHeartbeatConnection extends AMQPLazyConnection
+class AMQPLazyHeartbeatConnection extends AMQPStreamConnection
 {
 
     protected $heartbeatEnabled = false;
@@ -15,6 +15,7 @@ class AMQPLazyHeartbeatConnection extends AMQPLazyConnection
     {
         $return = parent::connect();
         $this->enableHeartbeat();
+
 
         return $return;
     }
@@ -29,5 +30,12 @@ class AMQPLazyHeartbeatConnection extends AMQPLazyConnection
         }
     }
 
+    /**
+     * @inheritDoc
+     */
+    public function connectOnConstruct(): bool
+    {
+        return false;
+    }
 
 }

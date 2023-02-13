@@ -4,6 +4,7 @@ namespace OldSound\RabbitMqBundle\DependencyInjection;
 
 use OldSound\RabbitMqBundle\RabbitMq\BatchConsumerInterface;
 use OldSound\RabbitMqBundle\RabbitMq\ConsumerInterface;
+use Symfony\Component\Config\Definition\ConfigurationInterface;
 use Symfony\Component\Config\Definition\Exception\InvalidConfigurationException;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -79,12 +80,12 @@ class OldSoundRabbitMqExtension extends Extension
         }
     }
 
-    public function getConfiguration(array $config, ContainerBuilder $container)
+    public function getConfiguration(array $config, ContainerBuilder $container): ?ConfigurationInterface
     {
         return new Configuration($this->getAlias());
     }
 
-    public function getAlias()
+    public function getAlias(): string
     {
         return 'old_sound_rabbit_mq';
     }

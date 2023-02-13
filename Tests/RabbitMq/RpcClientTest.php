@@ -55,11 +55,9 @@ class RpcClientTest extends TestCase
         $this->assertSame($expectedNotify, $notified);
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     */
     public function testInvalidParameterOnNotify()
     {
+        $this->expectException(\InvalidArgumentException::class);
         /** @var RpcClient $client */
         $client = $this->getMockBuilder('\OldSound\RabbitMqBundle\RabbitMq\RpcClient')
             ->setMethods(array('sendReply', 'maybeStopConsumer'))

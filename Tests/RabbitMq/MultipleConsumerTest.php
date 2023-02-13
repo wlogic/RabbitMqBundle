@@ -38,7 +38,7 @@ class MultipleConsumerTest extends TestCase
      *
      * @return void
      */
-    public function setUp()
+    public function setUp(): void
     {
         $this->amqpConnection = $this->prepareAMQPConnection();
         $this->amqpChannel = $this->prepareAMQPChannel();
