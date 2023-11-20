@@ -5,6 +5,7 @@ namespace OldSound\RabbitMqBundle\RabbitMq;
 
 use PhpAmqpLib\Exception\AMQPChannelClosedException;
 use PhpAmqpLib\Exception\AMQPConnectionClosedException;
+use PhpAmqpLib\Exception\AMQPTimeoutException;
 
 class ProducerManager extends BaseAmqp
 {
@@ -30,7 +31,7 @@ class ProducerManager extends BaseAmqp
                         $exchange,
                         $messageDetail['routing_key']
                     );
-                } catch (AMQPConnectionClosedException | AMQPChannelClosedException $AMQPConnectionClosedException) {
+                } catch (AMQPTimeoutException | AMQPConnectionClosedException | AMQPChannelClosedException $AMQPConnectionClosedException) {
                     $this->logger->error('Produce Message Failed '.$AMQPConnectionClosedException->getMessage());
                     // attempt reconnect
                     $this->reconnect();
