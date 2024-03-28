@@ -2,29 +2,24 @@
 
 namespace OldSound\RabbitMqBundle\Command;
 
-use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Console\Command\Command;
 
-abstract class BaseRabbitMqCommand extends Command implements ContainerAwareInterface
+abstract class BaseRabbitMqCommand extends Command
 {
     /**
-     * @var ContainerInterface
+     * @param ContainerInterface $container
      */
-    protected $container;
-
-    /**
-     * {@inheritDoc}
-     */
-    public function setContainer(ContainerInterface $container = null)
-    {
-        $this->container = $container;
+    public function __construct (
+        private ContainerInterface $container
+    ){
+        parent::__construct();
     }
 
     /**
      * @return ContainerInterface
      */
-    public function getContainer()
+    public function getContainer(): ContainerInterface
     {
         return $this->container;
     }

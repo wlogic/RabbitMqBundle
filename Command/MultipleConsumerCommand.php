@@ -6,7 +6,7 @@ use Symfony\Component\Console\Input\InputArgument;
 
 class MultipleConsumerCommand extends BaseConsumerCommand
 {
-    protected function configure()
+    protected function configure(): void
     {
         parent::configure();
 

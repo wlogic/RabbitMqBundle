@@ -22,7 +22,7 @@ abstract class BaseGoConsumerCommand extends BaseRabbitMqCommand
      * @param $response
      * @return int
      */
-    protected function processResponse($response)
+    protected function processResponse($response): int
     {
         if ($response === ConsumerInterface::MSG_REJECT_REQUEUE || false === $response) {
             // Reject and requeue message to RabbitMQ

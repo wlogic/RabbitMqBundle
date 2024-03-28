@@ -10,8 +10,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class GoConsumerCommand extends BaseGoConsumerCommand
 {
-
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setName('rabbitmq:go:consumer')
@@ -32,7 +31,7 @@ class GoConsumerCommand extends BaseGoConsumerCommand
      * @throws \InvalidArgumentException When the number of messages to consume is less than 0
      * @throws \BadFunctionCallException When the pcntl is not installed and option -s is true
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $consumer = $this->getContainer()->get(sprintf($this->getConsumerService(), $input->getArgument('name')));
 
