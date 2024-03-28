@@ -14,7 +14,7 @@ use Symfony\Component\Console\Input\InputArgument;
 
 class DynamicConsumerCommand extends BaseConsumerCommand
 {
-    protected function configure()
+    protected function configure(): void
     {
         parent::configure();
 
