@@ -12,7 +12,7 @@ class StdInProducerCommand extends BaseRabbitMqCommand
     const FORMAT_PHP = 'php';
     const FORMAT_RAW = 'raw';
 
-    protected function configure(): void
+    protected function configure()
     {
         parent::configure();
 
@@ -34,7 +34,7 @@ class StdInProducerCommand extends BaseRabbitMqCommand
      *
      * @return integer 0 if everything went fine, or an error code
      */
-    protected function execute(InputInterface $input, OutputInterface $output): int
+    protected function execute(InputInterface $input, OutputInterface $output)
     {
         define('AMQP_DEBUG', (bool) $input->getOption('debug'));
 

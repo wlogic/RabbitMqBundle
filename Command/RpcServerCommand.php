@@ -9,7 +9,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class RpcServerCommand extends BaseRabbitMqCommand
 {
-    protected function configure(): void
+    protected function configuzre()
     {
         parent::configure();
 
@@ -32,7 +32,7 @@ class RpcServerCommand extends BaseRabbitMqCommand
      *
      * @throws \InvalidArgumentException When the number of messages to consume is less than 0
      */
-    protected function execute(InputInterface $input, OutputInterface $output): int
+    protected function execute(InputInterface $input, OutputInterface $output)
     {
         define('AMQP_DEBUG', (bool) $input->getOption('debug'));
         $amount = $input->getOption('messages');

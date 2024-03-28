@@ -9,7 +9,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class SetupFabricCommand extends BaseRabbitMqCommand
 {
-    protected function configure(): void
+    protected function configure()
     {
         $this
             ->setName('rabbitmq:setup-fabric')

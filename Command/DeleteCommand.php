@@ -13,7 +13,7 @@ use Symfony\Component\Console\Question\ConfirmationQuestion;
  */
 class DeleteCommand extends ConsumerCommand
 {
-    protected function configure(): void
+    protected function configure()
     {
         $this->addArgument('name', InputArgument::REQUIRED, 'Consumer Name')
              ->setDescription('Delete a consumer\'s queue')
@@ -28,7 +28,7 @@ class DeleteCommand extends ConsumerCommand
      *
      * @return integer 0 if everything went fine, or an error code
      */
-    protected function execute(InputInterface $input, OutputInterface $output): int
+    protected function execute(InputInterface $input, OutputInterface $output)
     {
         $noConfirmation = (bool) $input->getOption('no-confirmation');
 
