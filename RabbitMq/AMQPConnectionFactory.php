@@ -94,7 +94,7 @@ class AMQPConnectionFactory
                 'en_US',    // locale
                 $this->parameters['connection_timeout'],
                 $this->parameters['read_write_timeout'],
-                $this->parameters['ssl_context'],
+                $this->parameters['context'],
                 $this->parameters['keepalive'],
                 $this->parameters['heartbeat']
             );
