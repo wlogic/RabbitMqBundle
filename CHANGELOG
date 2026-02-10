@@ -1,3 +1,6 @@
+- 2025-02-10
+    * Fixed SSL context parameter: pass stream context resource (`context`) instead of raw `ssl_context` array to AMQP connection constructor in AMQPConnectionFactory (INT-877)
+
 - 2019-10-22
      * Replaced Symfony\Component\EventDispatcher\Event with Symfony\Contracts\EventDispatcher\Event
          for compatibility with Symfony >=4.3
