@@ -22,6 +22,7 @@ class AMQPConnectionFactory
         'connection_timeout' => 3,
         'read_write_timeout' => 3,
         'ssl_context'        => null,
+        'context'            => null,
         'keepalive'          => false,
         'heartbeat'          => 0,
     );
