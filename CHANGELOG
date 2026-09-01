@@ -1,3 +1,6 @@
+- 2026-09-01
+    * Added `context` to default connection parameters in AMQPConnectionFactory so non-SSL connections no longer trigger an undefined array key
+
 - 2025-02-10
     * Fixed SSL context parameter: pass stream context resource (`context`) instead of raw `ssl_context` array to AMQP connection constructor in AMQPConnectionFactory (INT-877)
 
